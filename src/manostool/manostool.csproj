@@ -61,8 +61,14 @@
       <Name>Manos</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="postbuild.bat" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="ListSources">
     <Message Text="@(Compile)" Importance="High" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>$(ProjectDir)postbuild.bat</PostBuildEvent>
+  </PropertyGroup>
 </Project>

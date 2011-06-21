@@ -46,9 +46,20 @@ namespace Manos.Tool
 				|| System.Environment.OSVersion.Platform == PlatformID.Win32S
 				|| System.Environment.OSVersion.Platform == PlatformID.Win32Windows
 				|| System.Environment.OSVersion.Platform == PlatformID.WinCE) {
-				ManosDirectory = Path.GetDirectoryName(Path.GetDirectoryName(exe_path));
-                DataDirectory = Path.Combine(ManosDirectory, "..");
-                DocsDirectory = Path.Combine(ManosDirectory, "docs");
+
+				string exedir = Path.GetDirectoryName(exe_path);
+				if (Directory.Exists(Path.Combine(exedir, "data")))
+				{
+					ManosDirectory = exedir;
+					DataDirectory = Path.Combine(ManosDirectory, "data");
+					DocsDirectory = Path.Combine(ManosDirectory, "docs");
+				}
+				else
+				{
+					ManosDirectory = Path.GetDirectoryName(exedir);
+					DataDirectory = Path.Combine(ManosDirectory, "..");
+					DocsDirectory = Path.Combine(ManosDirectory, "docs");
+				}
 			} else {
 				ManosDirectory = Path.GetDirectoryName (exe_path);
 				string lib_dir = Path.GetDirectoryName (ManosDirectory);
