@@ -188,7 +188,6 @@ namespace Manos.Templates {
 			case "filter":
 			default:
 				throw new InvalidOperationException (String.Format ("Unsupported operation {0}", tok.Value));
-				break;
 			}
 		}
 
