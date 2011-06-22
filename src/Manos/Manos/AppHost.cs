@@ -208,6 +208,8 @@ namespace Manos
 				}
 			});
 
+			timer.Start();
+
 			return t;
 		}
 	}

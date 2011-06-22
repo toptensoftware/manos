@@ -66,7 +66,9 @@ namespace Manos
 		/// </param>
 		public void Run (ManosApp app)
 		{
-			if (stopped)
+			// With very short timers, it's possible two or more events could be queued before RepeatPerformed() below gets called
+			// so double check we're not firing too many times
+			if (!ShouldContinueToRepeat())
 				return;
 
 			try {

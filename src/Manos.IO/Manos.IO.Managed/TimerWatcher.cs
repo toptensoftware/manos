@@ -8,6 +8,7 @@ namespace Manos.IO.Managed
 		private Action cb;
 		private Timer timer;
 		private TimeSpan after;
+		private int Executing;
 
 		public TimerWatcher (Context context, Action callback, TimeSpan after, TimeSpan repeat)
 			: base (context)
@@ -19,21 +20,36 @@ namespace Manos.IO.Managed
 			this.timer = new Timer (Invoke);
 			this.after = after;
 			this.Repeat = repeat;
+			this.Executing = 0;
 		}
 
 		void Invoke (object state)
 		{
-			if (IsRunning) {
-				Context.Enqueue (cb);
-				after = TimeSpan.Zero;
+
+			try
+			{
+				// Prevent re-entrancy
+				if (System.Threading.Interlocked.Increment(ref Executing) > 1)
+					return;
+
+				if (IsRunning)
+				{
+					Context.Enqueue(cb);
+					after = TimeSpan.Zero;
+				}
 			}
+			finally
+			{
+				System.Threading.Interlocked.Decrement(ref Executing);
+			}
+
 		}
 
 		public override void Start ()
 		{
 			base.Start ();
 			timer.Change ((int) after.TotalMilliseconds,
-				Repeat == TimeSpan.Zero ? Timeout.Infinite : (int) Repeat.TotalMilliseconds);
+				Repeat == TimeSpan.Zero ? -1 : (int) Repeat.TotalMilliseconds);
 		}
 
 		public override void Stop ()
