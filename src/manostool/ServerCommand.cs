@@ -75,7 +75,7 @@ namespace Manos.Tool
 			set {
 				if (value == null)
 					throw new ArgumentNullException ("value");
-				application_assembly = value;
+					application_assembly = value;
 			}
 		}
 		
