@@ -86,28 +86,36 @@ namespace Manos.Routing
 			
 			return method.GetParameters ();
 		}
-		
-		public static bool TryGetDataForParamList (ParameterInfo [] parameters, ManosApp app, IManosContext ctx, out object [] data)
+
+		public static bool TryGetDataForParamList(ParameterInfo[] parameters, ManosApp app, IManosContext ctx, out object[] data)
 		{
-			data = new object [parameters.Length];
-			
-			int param_start = 1;
-			data [0] = ctx;
-			
-			if (typeof (ManosApp).IsAssignableFrom (parameters [1].ParameterType)) {
-				data [1] = app;
-				++param_start;
+			data = new object[parameters.Length];
+
+			for (int i = 0; i < data.Length; i++)
+			{
+				// Context?
+				if (typeof(IManosContext).IsAssignableFrom(parameters[i].ParameterType))
+				{
+					data[i] = ctx;
+					continue;
+				}
+
+				// App?
+				if (app != null && typeof(ManosApp).IsAssignableFrom(parameters[i].ParameterType))
+				{
+					data[i] = app;
+					continue;
+				}
+
+				// Some other parameter
+				string name = parameters[i].Name;
+				if (!TryConvertType(ctx, name, parameters[i], out data[i]))
+					return false;
 			}
-			
-			for (int i = param_start; i < data.Length; i++) {
-				string name = parameters [i].Name;
-			
-				if (!TryConvertType (ctx, name, parameters [i], out data [i]))
-				    return false;
-			}
-			
+
 			return true;
 		}
+
 
 		public static bool TryConvertType (IManosContext ctx, string name, ParameterInfo param, out object data)
 		{

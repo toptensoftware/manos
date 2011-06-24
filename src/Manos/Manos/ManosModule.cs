@@ -202,14 +202,21 @@ namespace Manos {
 			return AddRouteHandler (action, new string [] { pattern }, HttpMethods.RouteMethods);
 		}
 
-		public RouteHandler Route (string pattern, MatchType matchType, ManosAction action)
+		public RouteHandler Route(string pattern, MatchType matchType, ManosAction action)
 		{
-			IMatchOperation [] ops = OpsForPatterns (new string [] { pattern }, matchType);
+			IMatchOperation[] ops = OpsForPatterns(new string[] { pattern }, matchType);
 
-			return AddRouteHandler (action, ops, HttpMethods.GetMethods);
+			return AddRouteHandler(action, ops, HttpMethods.GetMethods);
 		}
 
-		public RouteHandler Route (ManosAction action, params string [] patterns)
+		public RouteHandler Route(string pattern, MatchType matchType, ManosAction action, HttpMethod[] methods)
+		{
+			IMatchOperation[] ops = OpsForPatterns(new string[] { pattern }, matchType);
+
+			return AddRouteHandler(action, ops, methods);
+		}
+
+		public RouteHandler Route(ManosAction action, params string[] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.RouteMethods);
 		}
