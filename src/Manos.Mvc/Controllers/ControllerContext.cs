@@ -9,10 +9,20 @@ namespace Manos.Mvc
 {
 	public class ControllerContext
 	{
+		public ControllerContext()
+		{
+			ViewData = new Dictionary<string, object>();
+			ViewBag = new DynamicDictionary(ViewData);
+			ModelState = new ModelState();
+		}
+
 		public MvcApp Application { get; set; }
 		public IManosContext ManosContext { get; set; }
 		public MethodInfo CurrentAction { get; set; }
 		public Controller Controller { get; set; }
+		public dynamic ViewBag { get; private set; }
+		public Dictionary<string, object> ViewData { get; private set; }
+		public ModelState ModelState { get; private set; }
 
 		public IHttpResponse Response
 		{

@@ -8,7 +8,7 @@ namespace Manos.IO.Managed
 		private Action cb;
 		private Timer timer;
 		private TimeSpan after;
-		private int Executing;
+		private int invocationConcurrency;
 
 		public TimerWatcher (Context context, Action callback, TimeSpan after, TimeSpan repeat)
 			: base (context)
@@ -20,27 +20,19 @@ namespace Manos.IO.Managed
 			this.timer = new Timer (Invoke);
 			this.after = after;
 			this.Repeat = repeat;
-			this.Executing = 0;
 		}
 
 		void Invoke (object state)
 		{
-
-			try
-			{
-				// Prevent re-entrancy
-				if (System.Threading.Interlocked.Increment(ref Executing) > 1)
-					return;
-
-				if (IsRunning)
-				{
-					Context.Enqueue(cb);
-					after = TimeSpan.Zero;
+			try {
+				if (Interlocked.Increment (ref invocationConcurrency) == 1) {
+					if (IsRunning) {
+						Context.Enqueue (cb);
+						after = TimeSpan.Zero;
+					}
 				}
-			}
-			finally
-			{
-				System.Threading.Interlocked.Decrement(ref Executing);
+			} finally {
+				Interlocked.Decrement (ref invocationConcurrency);
 			}
 
 		}

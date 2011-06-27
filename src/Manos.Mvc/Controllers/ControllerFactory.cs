@@ -23,11 +23,19 @@ namespace Manos.Mvc
 					string pattern = attr.pattern;
 					if (pattern == null)
 					{
-						pattern = "/" + m.Name;
+						pattern = m.Name;
 					}
 
-					// Route it
-					Route(pattern, attr.matchType ?? GuessMatchType(pattern), new ActionHandler(this, m).Invoke, attr.methods);
+					if (pattern.StartsWith("/"))
+					{
+						// Route it
+						app.Route(pattern, attr.matchType ?? GuessMatchType(pattern), new ActionHandler(this, m).Invoke, attr.methods);
+					}
+					else
+					{
+						// Route it
+						this.Route("/" + pattern, attr.matchType ?? GuessMatchType(pattern), new ActionHandler(this, m).Invoke, attr.methods);
+					}
 				}
 			}
 		}

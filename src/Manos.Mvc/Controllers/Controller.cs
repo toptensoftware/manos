@@ -22,6 +22,30 @@ namespace Manos.Mvc
 			}
 		}
 
+		public ModelState ModelState
+		{
+			get
+			{
+				return Context.ModelState;
+			}
+		}
+
+		public Dictionary<string, object> ViewData
+		{
+			get
+			{
+				return Context.ViewData;
+			}
+		}
+
+		public dynamic ViewBag
+		{
+			get
+			{
+				return Context.ViewBag;
+			}
+		}
+
 		public RedirectResult Redirect(string url)
 		{
 			return new RedirectResult(url);
@@ -64,6 +88,12 @@ namespace Manos.Mvc
 		{
 			return new JsonResult(data, contentType, contentEncoding);
 		}
+
+		public bool TryUpdateModel(object model)
+		{
+			return ModelState.TryUpdateModel(new HttpModelValueProvider(Context.ManosContext), model);
+		}
+
 	}
 
 }

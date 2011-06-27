@@ -162,12 +162,19 @@ namespace Manos.Ext
 
 			if (BrowseTo != null)
 			{
+				var hostname = IPAddress == null ? "http://localhost" : "http://" + IPAddress;
+				if (Port != 80)
+					hostname += ":" + Port.ToString();
+
 				if (BrowseTo == "")
 				{
-					BrowseTo= IPAddress==null ? "http://localhost" : "http://" + IPAddress;
-					if (Port!=80)
-						BrowseTo+=":" + Port.ToString();
+					BrowseTo = hostname;
 				}
+				if (BrowseTo.StartsWith("/"))
+				{
+					BrowseTo = hostname + BrowseTo;
+				}
+
 				if (!BrowseTo.StartsWith("http://") && !BrowseTo.StartsWith("https://"))
 					BrowseTo = "http://" + BrowseTo;
 

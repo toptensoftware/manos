@@ -15,6 +15,23 @@ namespace Manos.Mvc
 			set;
 		}
 
+		public Dictionary<string, object> ViewData
+		{
+			get
+			{
+				return Context.ViewData;
+			}
+		}
+
+		public dynamic ViewBag
+		{
+			get
+			{
+				return Context.ViewBag;
+			}
+		}
+
+
 		public HtmlHelper Html
 		{
 			get;
@@ -181,8 +198,12 @@ namespace Manos.Mvc
 			if (StartPage != null)
 				StartPage.Execute(this);
 
+			Html.View = this;
+
 			// Execute the page view
 			OnExecute();
+
+			Html.View = null;
 
 			// Clean up the output writer
 			Output.Flush();

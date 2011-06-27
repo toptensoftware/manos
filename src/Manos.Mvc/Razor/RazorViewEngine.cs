@@ -69,7 +69,8 @@ namespace Manos.Mvc
 			// Add references to all currently loaded assemblies
 			foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
 			{
-				compileParams.ReferencedAssemblies.Add(a.Location);
+				if (!a.IsDynamic)
+					compileParams.ReferencedAssemblies.Add(a.Location);
 			}
 
 			// Compile

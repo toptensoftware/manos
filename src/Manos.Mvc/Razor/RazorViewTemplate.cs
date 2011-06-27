@@ -63,7 +63,7 @@ namespace Manos.Mvc
 			// Pass it the view context
 			viewbase.Context = ctx;
 			viewbase.Model = model;
-			viewbase.Html = new HtmlHelper(ctx);
+			viewbase.Html = new HtmlHelper(ctx, model);
 			viewbase.InnerView = innerView;
 			viewbase.StartPage = runStartPage ? Owner.CreateStartView() : null;			
 

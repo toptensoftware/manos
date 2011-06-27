@@ -91,7 +91,7 @@ namespace Manos.Mvc
 		// Load a view engine
 		public IViewTemplate LoadViewTemplate(string viewname, string controller)
 		{
-			string viewfile = FindViewTemplate(viewname, controller);
+			string viewfile = FindViewTemplate(viewname, CleanControllerName(controller));
 			if (viewfile==null)
 				throw new InvalidOperationException(string.Format("Can't find view `{0}` for controller `{1}`", viewname, controller));
 
@@ -137,6 +137,15 @@ namespace Manos.Mvc
 			RegisterAllControllers(Assembly.GetCallingAssembly());
 		}
 
+		static string CleanControllerName(string str)
+		{
+			if (str.EndsWith("Controller"))
+				return str.Substring(0, str.Length - 10);
+			else
+				return str;
+		}
+
+
 		// Register all controllers for a specific assembly
 		public void RegisterAllControllers(Assembly assembly)
 		{
@@ -153,7 +162,7 @@ namespace Manos.Mvc
 					if (attr.pattern != null)
 						Route(attr.pattern, rm);
 					else
-						Route("/" + type.Name, rm);
+						Route("/" + CleanControllerName(type.Name), rm);
 
 					any_routes = true;
 				}
@@ -161,7 +170,7 @@ namespace Manos.Mvc
 				// Map default route if not specified by at least one attribute
 				if (!any_routes)
 				{
-					Route("/" + type.Name, rm);
+					Route("/" + CleanControllerName(type.Name), rm);
 				}
 			}
 		}
