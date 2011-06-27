@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Manos.Mvc
 {
-	public class JsonResult : IActionResult
+	public class JsonResult : ActionResult
 	{
 		public JsonResult(object data, string contentType, System.Text.Encoding contentEncoding)
 		{

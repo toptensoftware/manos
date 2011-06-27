@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Manos.Mvc
 {
-	public class ViewResult : IActionResult
+	public class ViewResult : ActionResult
 	{
 		public ViewResult(MvcApp app, Controller controller, string viewname, object model, bool Partial)
 		{

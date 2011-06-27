@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Manos.Mvc
 {
-	public interface IActionResult
+	public interface ActionResult
 	{
 		void Process(ControllerContext ctx);
 	}

@@ -48,7 +48,7 @@ namespace Manos.Mvc
 				var result = actionDelegate(controller, data);
 
 				// Process the action result
-				IActionResult action_result = result as IActionResult;
+				ActionResult action_result = result as ActionResult;
 				if (action_result != null)
 				{
 					action_result.Process(controller.Context);

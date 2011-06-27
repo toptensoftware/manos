@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Manos.Mvc
 {
-	public class ContentResult : IActionResult
+	public class ContentResult : ActionResult
 	{
 		public ContentResult(string content, string contentType, System.Text.Encoding contentEncoding)
 		{

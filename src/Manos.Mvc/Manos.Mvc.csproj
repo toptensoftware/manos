@@ -75,7 +75,7 @@
     <Compile Include="Razor\RazorViewEngine.cs" />
     <Compile Include="Views\ViewBase.cs" />
     <Compile Include="Results\ViewResult.cs" />
-    <Compile Include="Controllers\IActionResult.cs" />
+    <Compile Include="Controllers\ActionResult.cs" />
     <Compile Include="Views\IViewTemplate.cs" />
     <Compile Include="Results\RedirectResult.cs" />
     <Compile Include="App\MvcApp.cs" />

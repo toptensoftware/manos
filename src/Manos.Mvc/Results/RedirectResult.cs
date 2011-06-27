@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Manos.Mvc
 {
-	public class RedirectResult : IActionResult
+	public class RedirectResult : ActionResult
 	{
 		public RedirectResult(string url)
 		{
