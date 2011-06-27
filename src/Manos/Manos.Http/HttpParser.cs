@@ -198,9 +198,12 @@ namespace Manos.Http {
 				p = (int) data.Position;
 				int  pe = (int) data.Length;
       
-				byte ch      = data.ReadByte ();  // the current character to process.
+				byte ch      = 0;          // the current character to process.
 				int c       = -1;          // utility variably used for up- and downcasing etc.
 				int to_read =  0;          // used to keep track of how much of body, etc. is left to read
+
+				if(state != State.body_identity)
+					ch = data.ReadByte ();
 
 				if (parsing_header (state)) {
 					++nread;
@@ -1257,7 +1260,7 @@ namespace Manos.Http {
 
 					if (to_read > 0) {
 						settings.RaiseOnBody(this, data, p, to_read);
-						data.Skip(to_read - 1);
+						data.Skip(to_read);
 						content_length -= to_read;
 						if (content_length == 0) {
 							settings.RaiseOnMessageComplete(this);
@@ -1272,7 +1275,7 @@ namespace Manos.Http {
 					to_read = pe;  // TODO change to use buffer ?
 					if (to_read > 0) {
 						settings.RaiseOnBody(this, data, p, to_read); 
-						data.Skip(to_read - 1);
+						data.Skip(to_read);
 					}
 					break;
 				/******************* Body *******************/
@@ -1359,7 +1362,7 @@ namespace Manos.Http {
 					to_read = min(pe, content_length);
 					if (to_read > 0) {
 						settings.RaiseOnBody(this, data, p, to_read);
-						data.Skip(to_read - 1);
+						data.Skip(to_read);
 					}
 
 					if (to_read == content_length) {
