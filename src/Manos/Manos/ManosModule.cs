@@ -209,6 +209,14 @@ namespace Manos {
 			return AddRouteHandler(action, ops, HttpMethods.GetMethods);
 		}
 
+		// Used by Manos.Mvc
+		public RouteHandler Route(string pattern, MatchType matchType, ManosAction action, HttpMethod[] methods)
+		{
+			IMatchOperation[] ops = OpsForPatterns(new string[] { pattern }, matchType);
+
+			return AddRouteHandler(action, ops, methods);
+		}
+
 		public RouteHandler Route(ManosAction action, params string[] patterns)
 		{
 			return AddRouteHandler (action, patterns, HttpMethods.RouteMethods);
