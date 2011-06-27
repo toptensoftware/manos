@@ -59,6 +59,7 @@
     <Compile Include="HtmlHelpers\HtmlString.cs" />
     <Compile Include="Models\HttpModelValueProvider.cs" />
     <Compile Include="Models\IModelValueProvider.cs" />
+    <Compile Include="Models\ModelBinder.cs" />
     <Compile Include="Models\ModelState.cs" />
     <Compile Include="Models\ModelValue.cs" />
     <Compile Include="Models\ModelStateError.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="SessionState\ISessionStateProvider.cs" />
     <Compile Include="SessionState\SessionState.cs" />
     <Compile Include="Utils\DynamicDictionary.cs" />
+    <Compile Include="Utils\md5.cs" />
     <Compile Include="Utils\TagBuilder.cs" />
     <Compile Include="Views\StartView.cs" />
     <Compile Include="Views\IViewEngine.cs" />

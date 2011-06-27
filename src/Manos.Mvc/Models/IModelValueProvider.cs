@@ -9,5 +9,6 @@ namespace Manos.Mvc
 	public interface IModelValueProvider
 	{
 		string GetValue(string key);
+		string[] GetFieldList(object model);
 	}
 }

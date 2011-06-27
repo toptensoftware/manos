@@ -22,6 +22,15 @@ namespace Manos.Mvc
 
 			// Default session state provider
 			SessionStateProvider = new InMemorySessionStateProvider();
+
+			// Allocate server key
+			ServerKey = Guid.NewGuid().ToString();
+		}
+
+		public string ServerKey
+		{
+			get;
+			set;
 		}
 
 		// Reset the view path

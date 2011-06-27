@@ -89,9 +89,12 @@ namespace Manos.Mvc
 			return new JsonResult(data, contentType, contentEncoding);
 		}
 
-		public bool TryUpdateModel(object model)
+		public bool TryUpdateModel(object model, string[] include_fields=null, string[] exclude_fields=null)
 		{
-			return ModelState.TryUpdateModel(new HttpModelValueProvider(Context.ManosContext), model);
+			ModelBinder b = new ModelBinder(ModelState);
+			b.IncludeFields = include_fields;
+			b.ExcludeFields = exclude_fields;
+			return b.TryUpdateModel(new HttpModelValueProvider(Context), model);
 		}
 
 	}
