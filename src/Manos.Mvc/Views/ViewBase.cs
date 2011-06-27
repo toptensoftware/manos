@@ -198,12 +198,17 @@ namespace Manos.Mvc
 			if (StartPage != null)
 				StartPage.Execute(this);
 
-			Html.View = this;
+			Context.CurrentView = this;
 
-			// Execute the page view
-			OnExecute();
-
-			Html.View = null;
+			try
+			{
+				// Execute the page view
+				OnExecute();
+			}
+			finally
+			{
+				Context.CurrentView = null;
+			}
 
 			// Clean up the output writer
 			Output.Flush();

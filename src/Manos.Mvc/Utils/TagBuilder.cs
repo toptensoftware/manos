@@ -19,6 +19,12 @@ namespace Manos.Mvc
 			set;
 		}
 
+		public bool AlwaysUseFullForm
+		{
+			get;
+			set;
+		}
+
 		public Dictionary<string, string> Attributes = new Dictionary<string,string>();
 
 		public void AddAttribute(string name, object value)
@@ -94,7 +100,7 @@ namespace Manos.Mvc
 
 			RenderOpening(sb);
 
-			if (m_Content == null || m_Content.Length == 0)
+			if ((m_Content == null || m_Content.Length == 0) && !AlwaysUseFullForm)
 			{
 				sb.Append(" />");
 			}

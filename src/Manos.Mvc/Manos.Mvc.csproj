@@ -54,6 +54,7 @@
     <Compile Include="Controllers\ControllerContext.cs" />
     <Compile Include="Exceptions\CompileException.cs" />
     <Compile Include="Exceptions\ExceptionRenderer.cs" />
+    <Compile Include="HtmlHelpers\FormHelperExtension.cs" />
     <Compile Include="HtmlHelpers\HtmlForm.cs" />
     <Compile Include="HtmlHelpers\HtmlHelper.cs" />
     <Compile Include="HtmlHelpers\HtmlString.cs" />

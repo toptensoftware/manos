@@ -17,7 +17,7 @@ namespace Manos.Mvc
 		public string GetValue(string key)
 		{
 			// Posted form data first
-			var str = m_Context.ManosContext.Request.PostData.GetString(key);
+			var str = m_Context.ManosContext.Request.PostData.Get(key).UnsafeValue;
 			if (str != null)
 				return str;
 
