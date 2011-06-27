@@ -1257,7 +1257,7 @@ namespace Manos.Http {
 
 					if (to_read > 0) {
 						settings.RaiseOnBody(this, data, p, to_read);
-						data.Skip(to_read);
+						data.Skip(to_read-1);		// -1 for the 1 byte already read
 						content_length -= to_read;
 						if (content_length == 0) {
 							settings.RaiseOnMessageComplete(this);
