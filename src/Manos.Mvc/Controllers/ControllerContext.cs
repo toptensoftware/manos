@@ -23,7 +23,7 @@ namespace Manos.Mvc
 		public dynamic ViewBag { get; private set; }
 		public Dictionary<string, object> ViewData { get; private set; }
 		public ModelState ModelState { get; private set; }
-		public ViewBase CurrentView { get; set; }
+		public View CurrentView { get; set; }
 
 		public IHttpResponse Response
 		{

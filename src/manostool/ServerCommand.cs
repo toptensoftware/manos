@@ -132,6 +132,21 @@ namespace Manos.Tool
 			get;
 			set;
 		}
+
+		private Assembly AssemblyResolve(object sender, ResolveEventArgs args)
+		{
+			// Find first comma
+			int comma = args.Name.IndexOf(',');
+			string baseName = (comma > 0) ? args.Name.Substring(0, comma) : args.Name;
+			string fullPath = System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(ApplicationAssembly)) + "\\" + baseName + ".dll";
+
+			if (System.IO.File.Exists(fullPath))
+			{
+				return Assembly.LoadFrom(fullPath);
+			}
+
+			return null;
+		}
 		
 		public void Run ()
 		{
@@ -143,7 +158,9 @@ namespace Manos.Tool
 
 			// Load the config.
 			ManosConfig.Load ();
-			
+
+			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(AssemblyResolve);
+
 			app = Loader.LoadLibrary<ManosApp> (ApplicationAssembly, Arguments);
 	
 			Console.WriteLine ("Running {0} on port {1}.", app, Port);

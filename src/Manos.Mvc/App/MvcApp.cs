@@ -146,7 +146,7 @@ namespace Manos.Mvc
 			RegisterAllControllers(Assembly.GetCallingAssembly());
 		}
 
-		static string CleanControllerName(string str)
+		public static string CleanControllerName(string str)
 		{
 			if (str.EndsWith("Controller"))
 				return str.Substring(0, str.Length - 10);
@@ -181,6 +181,9 @@ namespace Manos.Mvc
 				{
 					Route("/" + CleanControllerName(type.Name), rm);
 				}
+
+				// Register it's name for name->type lookup (used by action links)
+				RegisterControllerType(type);
 			}
 		}
 
@@ -188,6 +191,35 @@ namespace Manos.Mvc
 		{
 			get;
 			set;
+		}
+
+		// Replace this to install custom controller instantiation (IoC)
+		public Func<ControllerContext, Type, Controller> CreateControllerInstance = 
+			(cc, t) => (Controller)Activator.CreateInstance(t);
+
+		private Dictionary<string, Type> ControllerTypes = new Dictionary<string, Type>();
+
+		public Type GetControllerType(string name)
+		{
+			// Look up controller name
+			Type t;
+			if (ControllerTypes.TryGetValue(name, out t))
+				return t;
+			return null;
+		}
+
+		public void RegisterControllerType(Type t)
+		{
+			// Register fully qualified name eg: "MyProject.Controllers.HomeController"
+			ControllerTypes.Add(t.FullName, t);
+
+			// Register normal name eg: "HomeController"
+			ControllerTypes.Add(t.Name, t);
+
+			// Register shortened name eg: "Home"
+			string clean = CleanControllerName(t.Name);
+			if (clean != t.Name)
+				ControllerTypes.Add(clean, t);
 		}
 	}
 }

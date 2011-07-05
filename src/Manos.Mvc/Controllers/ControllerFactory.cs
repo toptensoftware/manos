@@ -11,7 +11,7 @@ namespace Manos.Mvc
 	{
 		public ControllerFactory(MvcApp app, Type type)
 		{
-			this.type = type;
+			this.ControllerType = type;
 			this.Application = app;
 
 			// Route all actions
@@ -29,34 +29,18 @@ namespace Manos.Mvc
 					if (pattern.StartsWith("/"))
 					{
 						// Route it
-						app.Route(pattern, attr.matchType ?? GuessMatchType(pattern), new ActionHandler(this, m).Invoke, attr.methods);
+						app.Route(pattern, attr.MatchType, new ActionHandler(this, m).InvokeMvcController, attr.methods);
 					}
 					else
 					{
 						// Route it
-						this.Route("/" + pattern, attr.matchType ?? GuessMatchType(pattern), new ActionHandler(this, m).Invoke, attr.methods);
+						this.Route("/" + pattern, attr.MatchType, new ActionHandler(this, m).InvokeMvcController, attr.methods);
 					}
 				}
 			}
 		}
 
-		public Controller CreateControllerInstance()
-		{
-			return (Controller)Activator.CreateInstance(type);
-		}
-
-		static Manos.Routing.MatchType GuessMatchType(string pattern)
-		{
-			if (pattern.IndexOfAny(Manos.Routing.MatchOperationFactory.REGEX_CHARS) >= 0)
-				return Manos.Routing.MatchType.Regex;
-			if (pattern.IndexOfAny(Manos.Routing.MatchOperationFactory.SIMPLE_CHARS) >= 0)
-				return Manos.Routing.MatchType.Simple;
-			return Manos.Routing.MatchType.String;
-		}
-
-
-
-		public Type type;
+		public Type ControllerType;
 		public MvcApp Application;
 	}
 

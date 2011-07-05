@@ -12,6 +12,9 @@ namespace Manos.Mvc
 	{
 		public static void RenderLocation(IHttpResponse r, string file, int line)
 		{
+			if (file == null)
+				return;
+
 			// Does the file exist?
 			if (System.IO.File.Exists(file))
 			{

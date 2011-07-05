@@ -16,21 +16,21 @@ namespace Manos.Mvc
 			this.actionDelegate = ActionDelegateFactory.Create(methodInfo);
 		}
 
-		public void Invoke(IManosContext ctx)
+		public void InvokeMvcController(IManosContext ctx)
 		{
 			try
 			{
-				// Create the controller
-				Controller controller = owner.CreateControllerInstance();
-
 				// Create a context
-				controller.Context = new ControllerContext()
+				var Context = new ControllerContext()
 				{
 					Application = owner.Application,
-					Controller = controller,
 					CurrentAction = methodInfo,
 					ManosContext = ctx,
 				};
+
+				// Create the controller
+				Context.Controller = owner.Application.CreateControllerInstance(Context, owner.ControllerType);
+				Context.Controller.Context = Context;
 
 				// Get parameters from the incoming data
 				object[] data;
@@ -45,13 +45,13 @@ namespace Manos.Mvc
 				}
 
 				// Invoke the controller
-				var result = actionDelegate(controller, data);
+				var result = actionDelegate(Context.Controller, data);
 
 				// Process the action result
 				ActionResult action_result = result as ActionResult;
 				if (action_result != null)
 				{
-					action_result.Process(controller.Context);
+					action_result.Process(Context);
 					return;
 				}
 
@@ -67,7 +67,7 @@ namespace Manos.Mvc
 				}
 
 				// Save modified session state
-				controller.Context.OnPostRequest();
+				Context.OnPostRequest();
 			}
 			catch (Exception x)
 			{

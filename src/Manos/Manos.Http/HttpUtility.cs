@@ -112,6 +112,92 @@ namespace Manos.Http {
 			return e.GetString (buf);
 			
 		}
+
+		public static bool IsUrlSafeChar(char ch)
+		{
+			if ((((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z'))) || ((ch >= '0') && (ch <= '9')))
+			{
+				return true;
+			}
+			switch (ch)
+			{
+				case '(':
+				case ')':
+				case '*':
+				case '-':
+				case '.':
+				case '_':
+				case '!':
+					return true;
+			}
+			return false;
+		}
+
+		public static char IntToHex(int n)
+		{
+			if (n <= 9)
+			{
+				return (char)('0' + n);
+			}
+			return (char)('A' + (n - 10));
+		}
+
+
+		public static string UrlEncode(string input)
+		{
+			return UrlEncode(input, Encoding.UTF8);
+		}
+
+		public static string UrlEncode(string input, Encoding e)
+		{
+			// Get byte array
+			var bytes = e.GetBytes(input);
+
+			// Count number of extra characters
+			int spaces = 0;
+			int non_safe = 0;
+			for (int i = 0; i < bytes.Length; i++)
+			{
+				byte ch = bytes[i];
+				if (ch == ' ')
+				{
+					spaces++;
+				}
+				else if (!IsUrlSafeChar((char)ch))
+				{
+					non_safe++;
+				}
+			}
+			if ((spaces == 0) && (non_safe == 0))
+			{
+				return Encoding.ASCII.GetString(bytes);
+			}
+
+			byte[] buffer = new byte[bytes.Length + (non_safe * 2)];
+			int outpos = 0;
+			for (int i = 0; i < bytes.Length; i++)
+			{
+				byte ch = bytes[i];
+				if (IsUrlSafeChar((char)ch))
+				{
+					buffer[outpos++] = ch;
+				}
+				else if (ch == ' ')
+				{
+					buffer[outpos++] = (byte)'+';
+				}
+				else
+				{
+					buffer[outpos++] = (byte)'%';
+					buffer[outpos++] = (byte)IntToHex((ch >> 4) & 0xF);
+					buffer[outpos++] = (byte)IntToHex(ch & 15);
+				}
+			}
+			return Encoding.ASCII.GetString(buffer);
+		}
+
+ 
+
 	
 		static int GetInt (byte b)
 		{

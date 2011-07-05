@@ -10,9 +10,9 @@ namespace Manos.Mvc
 		public RazorViewTemplate(RazorViewEngine owner, Type t, string viewfile)
 		{
 			// Check the view derives from ViewBase
-			if (!typeof(ViewBase).IsAssignableFrom(t))
+			if (!typeof(View).IsAssignableFrom(t))
 			{
-				throw new Exception(string.Format("View does not inherit from {0}", typeof(ViewBase).FullName));
+				throw new Exception(string.Format("View does not inherit from {0}", typeof(View).FullName));
 			}
 
 			this.Owner = owner;
@@ -30,7 +30,7 @@ namespace Manos.Mvc
 		{
 			if (type.IsGenericType)
 			{
-				if (type.GetGenericTypeDefinition() == typeof(ViewBase<>))
+				if (type.GetGenericTypeDefinition() == typeof(View<>))
 				{
 					if (modelType == null)
 					{
@@ -45,20 +45,20 @@ namespace Manos.Mvc
 				}
 			}
 
-			if (type == typeof(ViewBase))
+			if (type == typeof(View))
 				return;
 
 			// Recurse
 			CheckDoesModelTypeMatch(type.BaseType, modelType);
 		}
 
-		public void Render(ControllerContext ctx, object model, ViewBase innerView, bool runStartPage)
+		public void Render(ControllerContext ctx, object model, View innerView, bool runStartPage)
 		{
 			// Check model type matches on strongly typed views
 			CheckDoesModelTypeMatch(ViewType, model==null ? null : model.GetType());
 
 			// Create the view
-			var viewbase = (ViewBase)Activator.CreateInstance(ViewType);
+			var viewbase = (View)Activator.CreateInstance(ViewType);
 
 			// Pass it the view context
 			viewbase.Context = ctx;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.IO;
 
 namespace Manos.Mvc
 {
@@ -97,6 +98,20 @@ namespace Manos.Mvc
 			return b.TryUpdateModel(new HttpModelValueProvider(Context), model);
 		}
 
+		public FileStreamResult File(Stream data, string contentType, string fileName=null)
+		{
+			return new FileStreamResult(data, contentType, fileName);
+		}
+
+		public FileResult File(string sourceFile, string contentType = null, string fileName = null)
+		{
+			return new FileResult(sourceFile, contentType, fileName);
+		}
+
+		public FileBytesResult File(byte[] data, string contentType = null, string fileName = null)
+		{
+			return new FileBytesResult(data, contentType, fileName);
+		}
 	}
 
 }

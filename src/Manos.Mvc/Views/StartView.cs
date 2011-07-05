@@ -7,9 +7,9 @@ using System.IO;
 
 namespace Manos.Mvc
 {
-	public abstract class StartView : ViewBase
+	public abstract class StartView : View
 	{
-		public ViewBase RootView
+		public View RootView
 		{
 			get;
 			set;
@@ -33,7 +33,7 @@ namespace Manos.Mvc
 			RootView.DefineSection(name, action);
 		}
 
-		internal void Execute(ViewBase RootView)
+		internal void Execute(View RootView)
 		{
 			// Setup self
 			this.RootView = RootView;

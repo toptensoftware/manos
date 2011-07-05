@@ -7,6 +7,6 @@ namespace Manos.Mvc
 {
 	public interface IViewTemplate
 	{
-		void Render(ControllerContext ctx, object model, ViewBase _innerView, bool runStartPage);
+		void Render(ControllerContext ctx, object model, View _innerView, bool runStartPage);
 	}
 }
