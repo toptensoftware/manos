@@ -113,11 +113,11 @@ namespace Manos.Http {
 			
 		}
 
-		public static bool IsUrlSafeChar(char ch)
+		public static bool EncodeChar(char ch)
 		{
 			if ((((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z'))) || ((ch >= '0') && (ch <= '9')))
 			{
-				return true;
+				return false;
 			}
 			switch (ch)
 			{
@@ -128,12 +128,12 @@ namespace Manos.Http {
 				case '.':
 				case '_':
 				case '!':
-					return true;
+					return false;
 			}
-			return false;
+			return true;
 		}
 
-		public static char IntToHex(int n)
+		public static char ToHex(int n)
 		{
 			if (n <= 9)
 			{
@@ -159,28 +159,33 @@ namespace Manos.Http {
 			for (int i = 0; i < bytes.Length; i++)
 			{
 				byte ch = bytes[i];
-				if (ch == ' ')
-				{
-					spaces++;
-				}
-				else if (!IsUrlSafeChar((char)ch))
+				if (EncodeChar((char)ch))
 				{
 					non_safe++;
 				}
+				else if (ch == ' ')
+				{
+					spaces++;
+				}
 			}
+
+			// Do we actually need to do anything?
 			if ((spaces == 0) && (non_safe == 0))
 			{
 				return Encoding.ASCII.GetString(bytes);
 			}
 
+			// Allocate a new buffer and do the encoding
 			byte[] buffer = new byte[bytes.Length + (non_safe * 2)];
 			int outpos = 0;
 			for (int i = 0; i < bytes.Length; i++)
 			{
 				byte ch = bytes[i];
-				if (IsUrlSafeChar((char)ch))
+				if (EncodeChar((char)ch))
 				{
-					buffer[outpos++] = ch;
+					buffer[outpos++] = (byte)'%';
+					buffer[outpos++] = (byte)ToHex((ch >> 4) & 0xF);
+					buffer[outpos++] = (byte)ToHex(ch & 15);
 				}
 				else if (ch == ' ')
 				{
@@ -188,18 +193,16 @@ namespace Manos.Http {
 				}
 				else
 				{
-					buffer[outpos++] = (byte)'%';
-					buffer[outpos++] = (byte)IntToHex((ch >> 4) & 0xF);
-					buffer[outpos++] = (byte)IntToHex(ch & 15);
+					buffer[outpos++] = ch;
 				}
 			}
+
+			// Return as ascii encoded string
 			return Encoding.ASCII.GetString(buffer);
 		}
 
- 
 
-	
-		static int GetInt (byte b)
+		static int GetInt(byte b)
 		{
 			char c = (char) b;
 			if (c >= '0' && c <= '9')
