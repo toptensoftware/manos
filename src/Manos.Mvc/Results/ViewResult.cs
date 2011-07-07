@@ -21,7 +21,7 @@ namespace Manos.Mvc
 		public void Process(ControllerContext ctx)
 		{
 			// Find the view file
-			var view = app.LoadViewTemplate(viewname, controller.GetType().Name);
+			var view = app.ViewService.LoadViewTemplate(viewname, controller.GetType().Name);
 
 			// Render it!
 			view.Render(ctx, model, null, !partial);

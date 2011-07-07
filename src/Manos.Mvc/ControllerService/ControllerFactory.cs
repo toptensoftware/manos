@@ -9,10 +9,17 @@ namespace Manos.Mvc
 {
 	public class ControllerFactory : ManosModule
 	{
-		public ControllerFactory(MvcApp app, Type type)
+		public ControllerFactory(ControllerService Service, Type type, bool UseThreadPool)
 		{
 			this.ControllerType = type;
-			this.Application = app;
+			this.Service = Service;
+
+			// Work out whether to use thread pool
+			var utp = (UseThreadPoolAttribute)type.GetCustomAttributes(typeof(UseThreadPoolAttribute), false).FirstOrDefault();
+			if (utp != null)
+				this.UseThreadPool = utp.UseThreadPool;
+			else
+				this.UseThreadPool = UseThreadPool;
 
 			// Route all actions
 			foreach (var m in type.GetMethods())
@@ -29,7 +36,7 @@ namespace Manos.Mvc
 					if (pattern.StartsWith("/"))
 					{
 						// Route it
-						app.Route(pattern, attr.MatchType, new ActionHandler(this, m).InvokeMvcController, attr.methods);
+						Service.Application.Route(pattern, attr.MatchType, new ActionHandler(this, m).InvokeMvcController, attr.methods);
 					}
 					else
 					{
@@ -41,7 +48,8 @@ namespace Manos.Mvc
 		}
 
 		public Type ControllerType;
-		public MvcApp Application;
+		public ControllerService Service;
+		public bool UseThreadPool;
 	}
 
 }

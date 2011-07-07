@@ -44,12 +44,35 @@ namespace Manos.Mvc
 			}
 		}
 
-		internal void OnPostRequest()
+		public void ProcessResult(object result)
 		{
+			// Process the action result
+			ActionResult action_result = result as ActionResult;
+			if (action_result != null)
+			{
+				// Process action result
+				action_result.Process(this);
+			}
+			else
+			{
+				// Other types
+				var string_result = result as string;
+				if (string_result != null)
+				{
+					ManosContext.Response.End(string_result);
+				}
+				else
+				{
+					if (result != null)
+						ManosContext.Response.End(result.ToString());
+					else
+						ManosContext.Response.End();
+				}
+			}
+
 			// Save modified session state
 			if (_session != null && _session.Modified)
 				Application.SessionStateProvider.SaveSessionState(ManosContext, _session);
 		}
-
 	}
 }

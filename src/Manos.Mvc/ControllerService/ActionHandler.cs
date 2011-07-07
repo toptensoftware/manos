@@ -14,22 +14,44 @@ namespace Manos.Mvc
 			this.owner = owner;
 			this.methodInfo = methodInfo;
 			this.actionDelegate = ActionDelegateFactory.Create(methodInfo);
+			this.useThreadPool = true;
+
+			var utp = (UseThreadPoolAttribute)methodInfo.GetCustomAttributes(typeof(UseThreadPoolAttribute), false).FirstOrDefault();
+			if (utp != null)
+				this.useThreadPool = utp.UseThreadPool;
+			else
+				this.useThreadPool = owner.UseThreadPool;
 		}
 
 		public void InvokeMvcController(IManosContext ctx)
+		{
+			if (useThreadPool)
+			{
+				// Invoke the action on the thread pool
+				System.Threading.ThreadPool.QueueUserWorkItem(o=>InvokeControllerInternal((IManosContext)ctx), ctx);
+			}
+			else
+			{
+				// Invoke the controller on the event loop thread
+				InvokeControllerInternal(ctx);
+			}
+		}
+
+
+		void InvokeControllerInternal(IManosContext ctx)
 		{
 			try
 			{
 				// Create a context
 				var Context = new ControllerContext()
 				{
-					Application = owner.Application,
+					Application = owner.Service.Application,
 					CurrentAction = methodInfo,
 					ManosContext = ctx,
 				};
 
 				// Create the controller
-				Context.Controller = owner.Application.CreateControllerInstance(Context, owner.ControllerType);
+				Context.Controller = owner.Service.CreateControllerInstance(Context, owner.ControllerType);
 				Context.Controller.Context = Context;
 
 				// Get parameters from the incoming data
@@ -47,27 +69,8 @@ namespace Manos.Mvc
 				// Invoke the controller
 				var result = actionDelegate(Context.Controller, data);
 
-				// Process the action result
-				ActionResult action_result = result as ActionResult;
-				if (action_result != null)
-				{
-					action_result.Process(Context);
-					return;
-				}
-
-				// Handle the result
-				var string_result = result as string;
-				if (string_result != null)
-				{
-					ctx.Response.End(string_result);
-				}
-				else
-				{
-					ctx.Response.End(result.ToString());
-				}
-
-				// Save modified session state
-				Context.OnPostRequest();
+				// Process the result
+				Context.ProcessResult(result);
 			}
 			catch (Exception x)
 			{
@@ -78,5 +81,6 @@ namespace Manos.Mvc
 		ControllerFactory owner;
 		MethodInfo methodInfo;
 		ActionDelegate actionDelegate;
+		bool useThreadPool;
 	}
 }

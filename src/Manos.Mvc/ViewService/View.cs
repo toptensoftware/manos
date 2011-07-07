@@ -220,7 +220,7 @@ namespace Manos.Mvc
 			// Apply layout view
 			if (Layout != null)
 			{
-				IViewTemplate layoutView = Context.Application.LoadViewTemplate(Context.Application.MapPath(Layout));
+				IViewTemplate layoutView = Context.Application.ViewService.LoadViewTemplate(Context.Application.MapPath(Layout));
 				layoutView.Render(Context, Model, this, false);
 			}
 			else

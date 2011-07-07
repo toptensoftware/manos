@@ -73,7 +73,7 @@ namespace Manos.Mvc
 				string controllerPath;
 				if (controller_attr==null || controller_attr.pattern==null)
 				{
-					controllerPath = "/" + MvcApp.CleanControllerName(controllerType.Name);
+					controllerPath = "/" + ControllerService.CleanControllerName(controllerType.Name);
 				}
 				else
 				{

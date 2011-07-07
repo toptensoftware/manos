@@ -55,7 +55,7 @@ namespace Manos.Mvc
 			else
 			{
 				// Look up controller name
-				controllerType = This.Context.Application.GetControllerType(controllerName);
+				controllerType = This.Context.Application.ControllerService.GetControllerType(controllerName);
 			}
 
 			if (controllerType==null)

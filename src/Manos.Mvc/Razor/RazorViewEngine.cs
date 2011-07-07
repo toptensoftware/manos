@@ -14,12 +14,12 @@ namespace Manos.Mvc
 	{
 		#region IViewEngine Members
 
-		public RazorViewEngine(MvcApp app)
+		public RazorViewEngine(ViewService service)
 		{
-			this.Application = app;
+			this.Service = service;
 		}
 
-		MvcApp Application;
+		ViewService Service;
 
 		public IViewTemplate CreateView(string viewfile)
 		{
@@ -48,7 +48,7 @@ namespace Manos.Mvc
 				start_view_prepared = true;
 
 				// Load the start view
-				string start_view_file = Application.MapPath("/Views/_ViewStart.cshtml");
+				string start_view_file = Service.Application.MapPath("/Views/_ViewStart.cshtml");
 				if (System.IO.File.Exists(start_view_file))
 				{
 					var compiler = new RazorViewCompiler();

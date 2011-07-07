@@ -10,15 +10,12 @@ namespace Manos.Mvc
 	{
 		public MvcApp()
 		{
+			// Create services
+			ControllerService = new ControllerService(this);
+			ViewService = new ViewService(this);
+
 			// Document root is the current directory
 			DocumentRoot = System.IO.Directory.GetCurrentDirectory();
-
-			// Register standard view paths
-			RegisterViewPath("/Views/Shared/{view}.cshtml");
-			RegisterViewPath("/Views/{controller}/{view}.cshtml");
-
-			// Built-in razor view engine
-			RegisterViewEngine(new RazorViewEngine(this));
 
 			// Default session state provider
 			SessionStateProvider = new InMemorySessionStateProvider();
@@ -33,80 +30,6 @@ namespace Manos.Mvc
 			set;
 		}
 
-		// Reset the view path
-		public void ResetViewPath()
-		{
-			m_ViewPaths.Clear();
-		}
-
-		// Register a path on which to search for view files
-		public void RegisterViewPath(string path)
-		{
-			m_ViewPaths.Add(path);
-		}
-
-		public void ResetViewEngines()
-		{
-			m_ViewEngines.Clear();
-		}
-
-		public void RegisterViewEngine(IViewEngine e)
-		{
-			m_ViewEngines.Add(e);
-		}
-
-		// Find a view
-		public string FindViewTemplate(string view, string controller)
-		{
-			foreach (var p in m_ViewPaths)
-			{
-				var resolved = MapPath(p.Replace("{view}", view).Replace("{controller}", controller));
-				if (System.IO.File.Exists(resolved))
-					return resolved;
-			}
-
-			return null;
-		}
-
-		Dictionary<string, IViewTemplate> m_Views = new Dictionary<string, IViewTemplate>();
-		List<IViewEngine> m_ViewEngines = new List<IViewEngine>();
-
-		public IViewTemplate LoadViewTemplate(string viewfile)
-		{
-			// Check cache for an existing view factory
-			lock (m_Views)
-			{
-				// Check if we've already got the factory
-				IViewTemplate view;
-				if (m_Views.TryGetValue(viewfile, out view))
-					return view;
-
-				// Find a view engine
-				foreach (var e in m_ViewEngines)
-				{
-					view = e.CreateView(viewfile);
-					if (view != null)
-					{
-						m_Views.Add(viewfile, view);
-						return view;
-					}
-				}
-
-				// No view engine knows how to handle this view
-				return null;
-			}
-		}
-
-		// Load a view engine
-		public IViewTemplate LoadViewTemplate(string viewname, string controller)
-		{
-			string viewfile = FindViewTemplate(viewname, CleanControllerName(controller));
-			if (viewfile==null)
-				throw new InvalidOperationException(string.Format("Can't find view `{0}` for controller `{1}`", viewname, controller));
-
-			// Create the view
-			return LoadViewTemplate(viewfile);
-		}
 
 		// Map a path to the document root
 		public string MapPath(string path)
@@ -127,8 +50,6 @@ namespace Manos.Mvc
 			set;
 		}
 
-		List<string> m_ViewPaths = new List<string>();
-
 		// Route a static content folder
 		public void RouteStaticContent(string route_prefix, string content_folder=null)
 		{
@@ -140,86 +61,23 @@ namespace Manos.Mvc
 			Route(route_prefix, new StaticContentModule(route_prefix, MapPath(content_folder)));
 		}
 
-		// Enumerate all types in the calling assembly and register all Controllers
-		public void RegisterAllControllers()
-		{
-			RegisterAllControllers(Assembly.GetCallingAssembly());
-		}
-
-		public static string CleanControllerName(string str)
-		{
-			if (str.EndsWith("Controller"))
-				return str.Substring(0, str.Length - 10);
-			else
-				return str;
-		}
-
-
-		// Register all controllers for a specific assembly
-		public void RegisterAllControllers(Assembly assembly)
-		{
-			// Find all controllers
-			foreach (var type in from t in assembly.GetTypes() where !t.IsAbstract && typeof(Controller).IsAssignableFrom(t) select t)
-			{
-				// Create a factory for it
-				var rm = new ControllerFactory(this, type);
-
-				// Map all it's routes
-				bool any_routes = false;
-				foreach (HttpControllerAttribute attr in type.GetCustomAttributes(typeof(HttpControllerAttribute), false))
-				{
-					if (attr.pattern != null)
-						Route(attr.pattern, rm);
-					else
-						Route("/" + CleanControllerName(type.Name), rm);
-
-					any_routes = true;
-				}
-
-				// Map default route if not specified by at least one attribute
-				if (!any_routes)
-				{
-					Route("/" + CleanControllerName(type.Name), rm);
-				}
-
-				// Register it's name for name->type lookup (used by action links)
-				RegisterControllerType(type);
-			}
-		}
-
 		public ISessionStateProvider SessionStateProvider
 		{
 			get;
 			set;
 		}
 
-		// Replace this to install custom controller instantiation (IoC)
-		public Func<ControllerContext, Type, Controller> CreateControllerInstance = 
-			(cc, t) => (Controller)Activator.CreateInstance(t);
-
-		private Dictionary<string, Type> ControllerTypes = new Dictionary<string, Type>();
-
-		public Type GetControllerType(string name)
+		public ControllerService ControllerService
 		{
-			// Look up controller name
-			Type t;
-			if (ControllerTypes.TryGetValue(name, out t))
-				return t;
-			return null;
+			get;
+			private set;
 		}
 
-		public void RegisterControllerType(Type t)
+		public ViewService ViewService
 		{
-			// Register fully qualified name eg: "MyProject.Controllers.HomeController"
-			ControllerTypes.Add(t.FullName, t);
-
-			// Register normal name eg: "HomeController"
-			ControllerTypes.Add(t.Name, t);
-
-			// Register shortened name eg: "Home"
-			string clean = CleanControllerName(t.Name);
-			if (clean != t.Name)
-				ControllerTypes.Add(clean, t);
+			get;
+			private set;
 		}
+
 	}
 }

@@ -46,13 +46,15 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\UseThreadPoolAttribute.cs" />
     <Compile Include="Attributes\HttpPostAtteibute.cs" />
     <Compile Include="Attributes\HttpGetAttribute.cs" />
     <Compile Include="Attributes\HttpMethodAttribute.cs" />
-    <Compile Include="Controllers\ActionDelegate.cs" />
-    <Compile Include="Controllers\ActionHandler.cs" />
-    <Compile Include="Controllers\Controller.cs" />
-    <Compile Include="Controllers\ControllerContext.cs" />
+    <Compile Include="ControllerService\ActionDelegate.cs" />
+    <Compile Include="ControllerService\ActionHandler.cs" />
+    <Compile Include="ControllerService\Controller.cs" />
+    <Compile Include="ControllerService\ControllerContext.cs" />
+    <Compile Include="ControllerService\ControllerService.cs" />
     <Compile Include="Exceptions\CompileException.cs" />
     <Compile Include="Exceptions\ExceptionRenderer.cs" />
     <Compile Include="HtmlHelpers\UrlHelperExtension.cs" />
@@ -69,6 +71,7 @@
     <Compile Include="DesignTime\RazorBuildProvider.cs" />
     <Compile Include="Razor\RazorViewCompiler.cs" />
     <Compile Include="Results\ContentResult.cs" />
+    <Compile Include="Results\AsyncResult.cs" />
     <Compile Include="Results\FileStreamResult.cs" />
     <Compile Include="Results\FileResult.cs" />
     <Compile Include="Results\FileBytesResult.cs" />
@@ -81,20 +84,21 @@
     <Compile Include="Utils\DynamicDictionary.cs" />
     <Compile Include="Utils\md5.cs" />
     <Compile Include="Utils\TagBuilder.cs" />
-    <Compile Include="Views\StartView.cs" />
-    <Compile Include="Views\IViewEngine.cs" />
+    <Compile Include="ViewService\StartView.cs" />
+    <Compile Include="ViewService\IViewEngine.cs" />
     <Compile Include="Razor\RazorViewTemplate.cs" />
     <Compile Include="Razor\RazorViewEngine.cs" />
-    <Compile Include="Views\View.cs" />
+    <Compile Include="ViewService\View.cs" />
     <Compile Include="Results\ViewResult.cs" />
-    <Compile Include="Controllers\ActionResult.cs" />
-    <Compile Include="Views\IViewTemplate.cs" />
+    <Compile Include="ControllerService\ActionResult.cs" />
+    <Compile Include="ViewService\IViewTemplate.cs" />
     <Compile Include="Results\RedirectResult.cs" />
     <Compile Include="App\MvcApp.cs" />
-    <Compile Include="Controllers\ControllerFactory.cs" />
+    <Compile Include="ControllerService\ControllerFactory.cs" />
     <Compile Include="Attributes\HttpControllerAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App\StaticContentModule.cs" />
+    <Compile Include="ViewService\ViewService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gackey.snk" />
