@@ -142,7 +142,6 @@
     <Compile Include="Manos.Routing\HtmlFormDataTypeConverter.cs" />
     <Compile Include="Manos.Template\TemplateEnvironment.cs" />
     <Compile Include="Manos.Template\TemplateLibrary.cs" />
-    <Compile Include="Manos.Template\TemplateParser.cs" />
     <Compile Include="Manos.Template\TemplateTokenizer.cs" />
     <Compile Include="Manos.Template\TemplateEngine.cs" />
     <Compile Include="Manos.Template\ManosTemplate.cs" />
